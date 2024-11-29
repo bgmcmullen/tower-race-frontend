@@ -16,26 +16,29 @@ function App() {
   const [playerPlayMessage, setPlayerPlayMessage] = useState<string>('');
   const [takeFromPile, setTakeFromPile] = useState<string>('discard');
   const [nextBrick, setNextBrick] = useState<number | null>(null);
-  const [playerTowerStatus, setPlayerTowerStatus] = useState<object>({brickAnimation: undefined, towerAnimation: undefined});
-  const [computerTowerStatus, setComputerTowerStatus] = useState<object>({brickAnimation: undefined, towerAnimation: undefined});
+  const [playerTowerStatus, setPlayerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined} | undefined>({ brickAnimation: undefined, towerAnimation: undefined });
+  const [computerTowerStatus, setComputerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined}| undefined>({ brickAnimation: undefined, towerAnimation: undefined });
+  const [gameOver, setGameOver] = useState<boolean>(false);
 
 
   function calculateTowerStatus(tower: number[]) {
+    if (gameOver)
+      return;
     let errors = 0;
+    let highest = 0;
 
-    for (let i = 0; i < tower.length - 1; i++) {
-      console.log(tower[i]);
-      if (tower[i] > tower[i + 1]){
-        errors++;
+    for (const brick of tower) {
+        if (brick < highest)
+          errors++
+        else if (brick > highest)
+          highest = brick;
       }
-    }
-    console.log('errors', errors)
-    if (errors <= 1)
-      return {brickAnimation: 'flash 2s ease-in-out infinite', towerAnimation: undefined};
-    else if (errors <= 3)
-      return {brickAnimation: undefined, towerAnimation: undefined};
+    if (errors <= 2)
+      return { brickAnimation: 'flash-green 2s ease-in-out infinite', towerAnimation: 'sway 18s ease-in-out infinite' };
+    else if (errors <= 4)
+      return { brickAnimation: 'vibrate 3.5s ease-in-out infinite', towerAnimation: 'sway 13s ease-in-out infinite' }
     else
-      return {brickAnimation: undefined, towerAnimation: 'sway 2s ease-in-out infinite'};
+      return { brickAnimation: 'vibrate 2s ease-in-out infinite', towerAnimation: 'sway 8s ease-in-out infinite' };
   }
 
 
@@ -53,7 +56,8 @@ function App() {
           console.log(payload);
           break;
         case 'set_computer_tower':
-          setComputerTower(payload);
+          if(!gameOver)
+            setComputerTower(payload);
           break;
         case 'set_player_tower':
           setPlayerTower(payload);
@@ -68,9 +72,15 @@ function App() {
           setNextBrick(payload);
           break;
         case 'player_wins':
+          setGameOver(true)
+          setComputerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined  });
+          setPlayerTowerStatus( { brickAnimation: 'flash-gold 3s ease-in-out infinite', towerAnimation: 'rise-up-and-down 3s ease-in-out infinite' });
           alert("YOU WIN!!")
           break;
         case 'computer_wins':
+          setGameOver(true)
+          setPlayerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined  });
+          setComputerTowerStatus( { brickAnimation: 'flash-gold 3s ease-in-out infinite', towerAnimation: 'rise-up-and-down 3s ease-in-out infinite' });
           alert("YOU LOSE!!");
           break;
 
@@ -86,10 +96,11 @@ function App() {
       console.log('WebSocket connection closed.');
     });
 
-  }, [])
+  }, []);
+
 
   function sendReplaceBrickMessage(event: React.MouseEvent<HTMLButtonElement>) {
-    if (!takeFromPile)
+    if (!takeFromPile || gameOver)
       return;
 
     const target = event.target as HTMLButtonElement;
@@ -166,25 +177,27 @@ function App() {
 
   return (
     <>
-    <div>computerTowerStatus: {computerTowerStatus.towerAnimation}</div>
-    <div>playerTowerStatus: {playerTowerStatus.towerAnimation}</div>
-      <br></br>
       {computerPlayMessage}
-      <>Computer's Tower:
+
+
+        <div>{playerPlayMessage}</div>
+        <div>Next Brick: <button>{nextBrick}</button></div>
+      <span className='game-container'>
+        <div className='tower' style={{ animation: playerTowerStatus?.towerAnimation }}>
+          <h2>Player</h2>
+          {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className='button-container'><button key={`player-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: playerTowerStatus?.brickAnimation }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
+          )} </div>
+        <>
+          <br></br>
+          <div className='tower' style={{ animation: computerTowerStatus?.towerAnimation }}>
+          <h2>Computer</h2>
+            {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className='button-container'><button key={`computer-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: computerTowerStatus?.brickAnimation }}>{brick}</button></div>
+            )}
+          </div>
+        </>
         <br></br>
-        <div className='tower' style={{animation: computerTowerStatus.towerAnimation}}>
-        {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className='button-container'><button key={`computer-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: computerTowerStatus.brickAnimation }}>{brick}</button></div>
-        )} 
-        </div></>
-      <br></br>
-      <div>{playerPlayMessage}</div>
-      <>Player's Tower:
-        <br></br>
-        <div>Next Brick: {nextBrick}</div>
-        <div className='tower' style={{animation: playerTowerStatus.towerAnimation}}>
-        {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className='button-container'><button key={`player-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: playerTowerStatus.brickAnimation }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
-        )} <button onClick={switchToMainPile}>Take from Main</button></div></>
-      <br></br>
+      </span>
+      <button onClick={switchToMainPile}>Take from Main</button>
       <button onClick={sendStartMessasge}>Start</button>
     </>
   )
