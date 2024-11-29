@@ -14,7 +14,8 @@ function App() {
   const [playerTower, setPlayerTower] = useState<number[]>([]);
   const [computerPlayMessage, setComputerPlayMessage] = useState<string>('');
   const [playerPlayMessage, setPlayerPlayMessage] = useState<string>('');
-  const [takeFromPile, setTakeFromPile] = useState<string>('');
+  const [takeFromPile, setTakeFromPile] = useState<string>('discard');
+  const [nextBrick, setNextBrick] = useState<number | null>(null);
 
 
   useEffect(() => {
@@ -42,8 +43,16 @@ function App() {
         case 'set_player_play_message':
           setPlayerPlayMessage(payload);
           break;
-        case 'set_take_from_pile':
+        case 'set_next_brick':
+          setNextBrick(payload);
           break;
+        case 'player_wins':
+          alert("YOU WIN!!")
+          break;
+        case 'computer_wins':
+          alert("YOU LOSE!!");
+          break;
+
       }
     }
 
@@ -58,9 +67,29 @@ function App() {
 
   }, [])
 
+  function sendReplaceBrickMessage(event: React.MouseEvent<HTMLButtonElement>) {
+    if (!takeFromPile)
+      return;
+
+    const target = event.target as HTMLButtonElement;
+    const takeMessage = JSON.stringify({
+      type: `take_from_${takeFromPile}`,
+      payload: target.innerText
+    })
+
+    setMessageQueue((prevMessageQueue) => [...prevMessageQueue, takeMessage]);
+    setTakeFromPile('discard');
 
 
-  function sendTestMessasge() {
+    const getMessage = JSON.stringify({
+      type: 'get_top_of_discard',
+      payload: null
+    })
+
+    setMessageQueue((prevMessageQueue) => [...prevMessageQueue, getMessage]);
+  }
+
+  function sendStartMessasge() {
     const testMessage = JSON.stringify({
       type: "start_game",
       payload: null,
@@ -68,6 +97,23 @@ function App() {
 
     setMessageQueue((prevMessageQueue) => [...prevMessageQueue, testMessage]);
 
+    const message = JSON.stringify({
+      type: 'get_top_of_discard',
+      payload: null
+    })
+
+    setMessageQueue((prevMessageQueue) => [...prevMessageQueue, message]);
+
+  }
+
+  function switchToMainPile() {
+    setTakeFromPile('main');
+
+    const message = JSON.stringify({
+      type: 'get_top_of_main',
+      payload: null
+    });
+    setMessageQueue((prevMessageQueue) => [...prevMessageQueue, message]);
   }
 
 
@@ -92,19 +138,21 @@ function App() {
 
   return (
     <>
+      <br></br>
       {computerPlayMessage}
       <>Computer's Tower:
         <br></br>
-        {computerTower.map((brick) => <button>{brick}</button>
-        )} <button>None</button></>
+        {computerTower.map((brick) => <div className="button-container"><button style={{ width: 5 + (brick * 4) }}>{brick}</button></div>
+        )} </>
       <br></br>
       <div>{playerPlayMessage}</div>
       <>Player's Tower:
         <br></br>
-        {playerTower.map((brick) => <button>{brick}</button>
-        )} <button>None</button></>
+        <div>Next Brick: {nextBrick}</div>
+        {playerTower.map((brick) => <div className="button-container"><button style={{ width: 5 + (brick * 4) }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
+        )} <button onClick={switchToMainPile}>Take from Main</button></>
       <br></br>
-      <button onClick={sendTestMessasge}>Start</button>
+      <button onClick={sendStartMessasge}>Start</button>
     </>
   )
 }
