@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import './App.css'
+import './App.scss'
 
 const API_URL: string | URL = import.meta.env.VITE_API_URL
 
@@ -173,7 +173,7 @@ function App() {
       <>Computer's Tower:
         <br></br>
         <div className='tower' style={{animation: computerTowerStatus.towerAnimation}}>
-        {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className="button-container"><button key={`computer-brick${index}`} className='tower-button' style={{ width: 5 + (brick * 4), animation: computerTowerStatus.brickAnimation, animationDelay:`${index/10}s` }}>{brick}</button></div>
+        {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className='button-container'><button key={`computer-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: computerTowerStatus.brickAnimation }}>{brick}</button></div>
         )} 
         </div></>
       <br></br>
@@ -182,7 +182,7 @@ function App() {
         <br></br>
         <div>Next Brick: {nextBrick}</div>
         <div className='tower' style={{animation: playerTowerStatus.towerAnimation}}>
-        {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className="button-container"><button key={`player-brick${index}`} className='tower-button' style={{ width: 5 + (brick * 4), animation: playerTowerStatus.brickAnimation, animationDelay:`${index/10}s` }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
+        {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className='button-container'><button key={`player-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: playerTowerStatus.brickAnimation }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
         )} <button onClick={switchToMainPile}>Take from Main</button></div></>
       <br></br>
       <button onClick={sendStartMessasge}>Start</button>
