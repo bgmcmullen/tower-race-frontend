@@ -3,8 +3,61 @@
   justify-content: center;
 }
 
-button {
+.tower-button {
   text-justify: center;
   padding-left: 0;
   padding-right: 0;
+  background-color: rgb(22,22,22);
+  /* animation: sway 1s ease-in-out infinite; */
+  
+}
+
+.tower {
+  transform-origin: bottom center;
+  /* animation: sway 2s ease-in-out infinite */
+}
+
+
+@keyframes flash {
+  0% {
+    background-color: rgb(22,22,22);
+  }
+
+  50% {
+    background-color: lawngreen;
+  }
+
+  100% {
+    background-color: rgb(22,22,22);
+  }
+}
+
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2deg);
+  }
+  50% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes vibrate {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
