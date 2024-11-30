@@ -10,9 +10,13 @@ h2 {
 }
 
 .button-container {
+  visibility: hidden;
   display: flex;
   justify-content: center;
+  background-color: rgb(22, 22, 22);
 }
+
+
 
 .game-container {
   width: 100%;
@@ -36,10 +40,21 @@ h2 {
 
 @for $i from 0 through 10 {
   .tower-button-delay-#{$i} {
+    visibility: visible;
+    background-color: inherit !important;
     padding-left: 0;
     padding-right: 0;
-    background-color: rgb(22, 22, 22);
-    animation-delay: #{math.div(10 - $i, 10)}s !important;
+    // animation-delay: #{math.div(10 - $i, 10)}s !important;
+  }
+}
+
+
+@keyframes fly-in-left {
+  0% {
+    transform: translateX(-50vw);
+  }
+  100% {
+    transform: translateX(0vw);
   }
 }
 
@@ -121,3 +136,4 @@ h2 {
     transform: translateX(0);
   }
 }
+

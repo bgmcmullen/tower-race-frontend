@@ -16,8 +16,8 @@ function App() {
   const [playerPlayMessage, setPlayerPlayMessage] = useState<string>('');
   const [takeFromPile, setTakeFromPile] = useState<string>('discard');
   const [nextBrick, setNextBrick] = useState<number | null>(null);
-  const [playerTowerStatus, setPlayerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined} | undefined>({ brickAnimation: undefined, towerAnimation: undefined });
-  const [computerTowerStatus, setComputerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined}| undefined>({ brickAnimation: undefined, towerAnimation: undefined });
+  const [playerTowerStatus, setPlayerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string |undefined} | undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
+  const [computerTowerStatus, setComputerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string |undefined}| undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
   const [gameOver, setGameOver] = useState<boolean>(false);
 
 
@@ -27,18 +27,18 @@ function App() {
     let errors = 0;
     let highest = 0;
 
-    for (const brick of tower) {
-        if (brick < highest)
+    for (let i = 0; i < tower.length; i++) {
+        if (tower[i] < highest)
           errors++
-        else if (brick > highest)
-          highest = brick;
+        else if (tower[i] > highest)
+          highest = tower[i];
       }
-    if (errors <= 2)
-      return { brickAnimation: 'flash-green 2s ease-in-out infinite', towerAnimation: 'sway 18s ease-in-out infinite' };
-    else if (errors <= 4)
-      return { brickAnimation: 'vibrate 3.5s ease-in-out infinite', towerAnimation: 'sway 13s ease-in-out infinite' }
+    if (errors <= 4)
+      return { brickAnimation: `fly-in-left .6s ease-out`, towerAnimation: 'sway 18s ease-in-out infinite', brickContainerAnimation: 'flash-green 2s ease-in-out infinite'  };
+    else if (errors <= 5)
+      return { brickAnimation: `fly-in-left .6s ease-out, vibrate 3.5s ease-in-out infinites`, towerAnimation: 'sway 13s ease-in-out infinite', brickContainerAnimation: undefined  }
     else
-      return { brickAnimation: 'vibrate 2s ease-in-out infinite', towerAnimation: 'sway 8s ease-in-out infinite' };
+      return { brickAnimation: `fly-in-left .6s ease-out, vibrate 2s ease-in-out infinite`, towerAnimation: 'sway 8s ease-in-out infinite', brickContainerAnimation: undefined };
   }
 
 
@@ -73,14 +73,14 @@ function App() {
           break;
         case 'player_wins':
           setGameOver(true)
-          setComputerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined  });
-          setPlayerTowerStatus( { brickAnimation: 'flash-gold 3s ease-in-out infinite', towerAnimation: 'rise-up-and-down 3s ease-in-out infinite' });
+          setComputerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
+          setPlayerTowerStatus( { brickAnimation: undefined, towerAnimation: 'rise-up-and-down 3s ease-in-out infinite', brickContainerAnimation: 'flash-gold 3s ease-in-out infinite' });
           alert("YOU WIN!!")
           break;
         case 'computer_wins':
           setGameOver(true)
-          setPlayerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined  });
-          setComputerTowerStatus( { brickAnimation: 'flash-gold 3s ease-in-out infinite', towerAnimation: 'rise-up-and-down 3s ease-in-out infinite' });
+          setPlayerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined  });
+          setComputerTowerStatus( { brickAnimation: undefined, towerAnimation: 'rise-up-and-down 3s ease-in-out infinite', brickContainerAnimation: 'flash-gold 3s ease-in-out infinite'  });
           alert("YOU LOSE!!");
           break;
 
@@ -185,13 +185,13 @@ function App() {
       <span className='game-container'>
         <div className='tower' style={{ animation: playerTowerStatus?.towerAnimation }}>
           <h2>Player</h2>
-          {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className='button-container'><button key={`player-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: playerTowerStatus?.brickAnimation }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
+          {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className='button-container' style={{animation: `${playerTowerStatus?.brickContainerAnimation} ${.6 + (10-index)/10}s`}}><button key={`player-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: `${playerTowerStatus?.brickAnimation} ${.6 + (10-index)/10}s` }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
           )} </div>
         <>
           <br></br>
           <div className='tower' style={{ animation: computerTowerStatus?.towerAnimation }}>
           <h2>Computer</h2>
-            {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className='button-container'><button key={`computer-brick${index}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: computerTowerStatus?.brickAnimation }}>{brick}</button></div>
+            {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className='button-container' style={{animation: `${computerTowerStatus?.brickContainerAnimation} ${.6 + (10-index)/10}s`}}><button key={`computer-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: `${computerTowerStatus?.brickAnimation} ${.6 + (10-index)/10}s` }}>{brick}</button></div>
             )}
           </div>
         </>
