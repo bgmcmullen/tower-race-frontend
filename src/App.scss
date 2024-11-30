@@ -14,9 +14,15 @@ h2 {
   text-align: center;
 }
 
+.main-text {
+  margin-left: 8px;
+}
+
+.switch-button {
+  margin-left: 8px;
+}
 
 .new-brick {
-  position: relative;
   background-color: rgb(22, 22, 22);
   padding-left: 0;
   padding-right: 0;
@@ -24,17 +30,20 @@ h2 {
 }
 
 .start-button {
+  margin-left: 8px;
   height: 50px;
   width: 100px;
   font-size: 30px;
 }
 
 .button-container {
+  position: relative;
+  transform-style: preserve-3d;
   visibility: hidden;
   display: flex;
-  position: relative;
   width: 100%;
   justify-content: center;
+  align-items: flex-start;
   background-color: rgb(22, 22, 22);
 }
 
@@ -56,37 +65,63 @@ h2 {
   background-color: rgb(22, 22, 22);
 }
 
+
 .tower {
-  position: relative;
   margin: 5px;
   height: 270px;
+  width: 50%;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
   transform-origin: bottom center;
   margin: auto;
   margin-bottom: 10px;
+  transform-style: preserve-3d;
+}
+
+.tower-button-wrapper {
+  position: relative;
+  transform-style: preserve-3d;
 }
 
 @for $i from 0 through 10 {
   .tower-button-delay-#{$i} {
-    position: relative;
     visibility: visible;
     background-color: inherit !important;
     padding-left: 0;
     padding-right: 0;
     color: white;
-    // animation-delay: #{math.div(10 - $i, 10)}s !important;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
+  .tower-button-topface-#{$i} {
+    @extend .tower-button-delay-#{$i};
+    top: -50%;
+    transform: rotateX(-90deg) scaleY(-1);
+    position: absolute;
+    transform-origin: center;
   }
 }
 
+// @keyframes drop {
+//   0% {
+//     transform: rotate(0);
+//   }
 
-@keyframes fly-in-left {
-  0% {
-    transform: translateX(-50vw);
+//   100% {
+//     transform: rotateX(-90);
+//   }
+// }
+
+@keyframes drop {
+    0% {
+    transform: rotateX(0deg);
   }
+  
 
   100% {
-    transform: translateX(0vw);
+    transform: rotateX(-90deg);
   }
 }
 
