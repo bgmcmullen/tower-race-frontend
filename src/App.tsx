@@ -27,7 +27,7 @@ function App() {
 
 
   function calculateTowerStatus(tower: number[], isComputer: boolean) {
-    if (gameOver)
+    if (gameOver || tower.length !== 10)
       return;
 
     let flyInAnimation = '';
@@ -42,7 +42,7 @@ function App() {
 
     for (let i = 0; i < tower.length; i++) {
       if (tower[i] < highest)
-        errors++
+        errors++;
       else if (tower[i] > highest)
         highest = tower[i];
     }
@@ -63,10 +63,8 @@ function App() {
       const data = JSON.parse(event.data);
       const type = data.type;
       const payload = data.payload;
-      console.log('message', data)
       switch (type) {
         case 'test':
-          console.log(payload);
           break;
         case 'set_computer_tower':
           if (!gameOver)
@@ -181,9 +179,6 @@ function App() {
     const sendMessage = async () => {
       if (messageQueue.length > 0 && socketRef.current !== null && socketRef.current.readyState === WebSocket.OPEN) {
         const message = messageQueue[0]; // Get the first message in the queue
-
-
-        console.log(message);
 
         socketRef.current.send(message);
         setMessageQueue(prevMessageQueue => prevMessageQueue.slice(1)); // Remove the sent message from the queue
