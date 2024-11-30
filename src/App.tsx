@@ -194,7 +194,7 @@ function App() {
       <br></br>
 
       <p className='play-message'>{computerPlayMessage}</p>
-      <div>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: <button className='new-brick' style={{ width: 5 + ((nextBrick || 0) * 4)}} >{nextBrick}</button></div>
+      <div>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: {nextBrick && <button className='new-brick' style={{ width: 5 + (nextBrick  * 4)}} >{nextBrick}</button>}</div>
       <button onClick={switchToMainPile}>Take from Hidden Stack</button>
       <span className='game-container'>
         <div className='tower' style={{ animation: `${winner === 'player' ? 'rise-up-and-down 3s ease-in-out infinite' : playerTowerStatus?.towerAnimation}` }}>
