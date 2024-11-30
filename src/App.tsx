@@ -16,29 +16,38 @@ function App() {
   const [playerPlayMessage, setPlayerPlayMessage] = useState<string>('');
   const [takeFromPile, setTakeFromPile] = useState<string>('discard');
   const [nextBrick, setNextBrick] = useState<number | null>(null);
-  const [playerTowerStatus, setPlayerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string |undefined} | undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
-  const [computerTowerStatus, setComputerTowerStatus] = useState<{brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string |undefined}| undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
+  const [playerTowerStatus, setPlayerTowerStatus] = useState<{ brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string | undefined } | undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
+  const [computerTowerStatus, setComputerTowerStatus] = useState<{ brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string | undefined } | undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
   const [gameOver, setGameOver] = useState<boolean>(false);
+  const [winner, setWinner] = useState<string>('');
 
 
-  function calculateTowerStatus(tower: number[]) {
+  function calculateTowerStatus(tower: number[], isComputer: boolean) {
     if (gameOver)
       return;
+
+    let flyInAnimation = '';
+    if (isComputer) {
+      flyInAnimation = 'fly-in-right .6s ease-out';
+    } else {
+      flyInAnimation = 'fly-in-left .6s ease-out';
+    }
+
     let errors = 0;
     let highest = 0;
 
     for (let i = 0; i < tower.length; i++) {
-        if (tower[i] < highest)
-          errors++
-        else if (tower[i] > highest)
-          highest = tower[i];
-      }
-    if (errors <= 4)
-      return { brickAnimation: `fly-in-left .6s ease-out`, towerAnimation: 'sway 18s ease-in-out infinite', brickContainerAnimation: 'flash-green 2s ease-in-out infinite'  };
-    else if (errors <= 5)
-      return { brickAnimation: `fly-in-left .6s ease-out, vibrate 3.5s ease-in-out infinites`, towerAnimation: 'sway 13s ease-in-out infinite', brickContainerAnimation: undefined  }
+      if (tower[i] < highest)
+        errors++
+      else if (tower[i] > highest)
+        highest = tower[i];
+    }
+    if (errors <= 2)
+      return { brickAnimation: flyInAnimation, towerAnimation: 'sway 18s ease-in-out infinite', brickContainerAnimation: 'flash-green 2s ease-in-out infinite' };
+    else if (errors <= 4)
+      return { brickAnimation: flyInAnimation, towerAnimation: 'sway 13s ease-in-out infinite', brickContainerAnimation: 'vibrate 3.5s ease-in-out infinites' }
     else
-      return { brickAnimation: `fly-in-left .6s ease-out, vibrate 2s ease-in-out infinite`, towerAnimation: 'sway 8s ease-in-out infinite', brickContainerAnimation: undefined };
+      return { brickAnimation: flyInAnimation, towerAnimation: 'sway 8s ease-in-out infinite', brickContainerAnimation: 'vibrate 2s ease-in-out infinite' };
   }
 
 
@@ -56,8 +65,11 @@ function App() {
           console.log(payload);
           break;
         case 'set_computer_tower':
-          if(!gameOver)
-            setComputerTower(payload);
+          if (!gameOver)
+            setTimeout(() => {
+              setComputerTower(payload);
+            }, 400)
+
           break;
         case 'set_player_tower':
           setPlayerTower(payload);
@@ -72,16 +84,16 @@ function App() {
           setNextBrick(payload);
           break;
         case 'player_wins':
-          setGameOver(true)
-          setComputerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
-          setPlayerTowerStatus( { brickAnimation: undefined, towerAnimation: 'rise-up-and-down 3s ease-in-out infinite', brickContainerAnimation: 'flash-gold 3s ease-in-out infinite' });
-          alert("YOU WIN!!")
+          setGameOver(true);
+          setWinner('player');
+          setComputerTowerStatus({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
+          // setPlayerTowerStatus( { brickAnimation: undefined, towerAnimation: 'rise-up-and-down 3s ease-in-out infinite', brickContainerAnimation: 'flash-gold 3s ease-in-out infinite' });
           break;
         case 'computer_wins':
-          setGameOver(true)
-          setPlayerTowerStatus( { brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined  });
-          setComputerTowerStatus( { brickAnimation: undefined, towerAnimation: 'rise-up-and-down 3s ease-in-out infinite', brickContainerAnimation: 'flash-gold 3s ease-in-out infinite'  });
-          alert("YOU LOSE!!");
+          setGameOver(true);
+          setWinner('computer');
+          setPlayerTowerStatus({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
+          // setComputerTowerStatus( { brickAnimation: undefined, towerAnimation: 'rise-up-and-down 3s ease-in-out infinite', brickContainerAnimation: 'flash-gold 3s ease-in-out infinite' });
           break;
 
       }
@@ -141,8 +153,8 @@ function App() {
   }
 
   useEffect(() => {
-    setComputerTowerStatus(calculateTowerStatus(computerTower));
-    setPlayerTowerStatus(calculateTowerStatus(playerTower));
+    setComputerTowerStatus(calculateTowerStatus(computerTower, true));
+    setPlayerTowerStatus(calculateTowerStatus(playerTower, false));
   }, [computerTower, playerTower])
 
   function switchToMainPile() {
@@ -177,28 +189,30 @@ function App() {
 
   return (
     <>
-      {computerPlayMessage}
+      <h1>- - - Tower Race - - -</h1>
+      <button className='start-button' onClick={sendStartMessasge}>Start</button>
+      <br></br>
 
-
-        <div>{playerPlayMessage}</div>
-        <div>Next Brick: <button>{nextBrick}</button></div>
+      <p className='play-message'>{computerPlayMessage}</p>
+      <div>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: <button>{nextBrick}</button></div>
+      <button onClick={switchToMainPile}>Take from Hidden Stack</button>
       <span className='game-container'>
-        <div className='tower' style={{ animation: playerTowerStatus?.towerAnimation }}>
-          <h2>Player</h2>
-          {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className='button-container' style={{animation: `${playerTowerStatus?.brickContainerAnimation} ${.6 + (10-index)/10}s`}}><button key={`player-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: `${playerTowerStatus?.brickAnimation} ${.6 + (10-index)/10}s` }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
+        <div className='tower' style={{ animation: `${winner === 'player' ? 'rise-up-and-down 3s ease-in-out infinite' : playerTowerStatus?.towerAnimation}` }}>
+          <h2>{winner === 'player' ? '👑Player👑' : 'Player'}</h2>
+          {playerTower.map((brick, index) => <div key={`player-brick-container${index}`} className='button-container' style={{ animation: `${winner === 'player' ? 'flash-gold 3s ease-in-out infinite' : playerTowerStatus?.brickContainerAnimation} ${.6 + (10 - index) / 10}s` }}><button key={`player-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: playerTowerStatus?.brickAnimation }} onClick={sendReplaceBrickMessage}>{brick}</button></div>
           )} </div>
         <>
           <br></br>
-          <div className='tower' style={{ animation: computerTowerStatus?.towerAnimation }}>
-          <h2>Computer</h2>
-            {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className='button-container' style={{animation: `${computerTowerStatus?.brickContainerAnimation} ${.6 + (10-index)/10}s`}}><button key={`computer-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: `${computerTowerStatus?.brickAnimation} ${.6 + (10-index)/10}s` }}>{brick}</button></div>
+          <div className='tower' style={{ animation: `${winner === 'computer' ? 'rise-up-and-down 3s ease-in-out infinite' : computerTowerStatus?.towerAnimation}` }}>
+            <h2>{winner === 'computer' ? '👑Computer👑' : 'Computer'}</h2>
+            {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`} className='button-container' style={{ animation: `${winner === 'computer' ? 'flash-gold 3s ease-in-out infinite' : computerTowerStatus?.brickContainerAnimation} ${.6 + (10 - index) / 10}s` }}><button key={`computer-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: computerTowerStatus?.brickAnimation }}>{brick}</button></div>
             )}
           </div>
         </>
         <br></br>
       </span>
-      <button onClick={switchToMainPile}>Take from Main</button>
-      <button onClick={sendStartMessasge}>Start</button>
+
+
     </>
   )
 }
