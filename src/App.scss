@@ -60,6 +60,7 @@ h2 {
 }
 
 .tower-button {
+  visibility: hidden;
   padding-left: 0;
   padding-right: 0;
   background-color: rgb(22, 22, 22);
@@ -86,12 +87,13 @@ h2 {
 
 @for $i from 0 through 10 {
   .tower-button-delay-#{$i} {
-    visibility: visible;
     background-color: inherit !important;
+    visibility: visible;
     padding-left: 0;
     padding-right: 0;
     color: white;
     position: relative;
+    will-change: transform;
     transform-style: preserve-3d;
   }
 
@@ -100,6 +102,7 @@ h2 {
     top: -50%;
     transform: rotateX(-90deg) scaleY(-1);
     position: absolute;
+    will-change: transform;
     transform-origin: center;
   }
 }
@@ -127,20 +130,24 @@ h2 {
 
 @keyframes fly-in-left {
   0% {
+    visibility: visible;
     transform: translateX(-50vw);
   }
 
   100% {
+    visibility: visible;
     transform: translateX(0vw);
   }
 }
 
 @keyframes fly-in-right {
   0% {
+    visibility: visible;
     transform: translateX(50vw);
   }
 
   100% {
+    visibility: visible;
     transform: translateX(0vw);
   }
 }

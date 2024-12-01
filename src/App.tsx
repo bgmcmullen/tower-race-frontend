@@ -9,8 +9,8 @@ const API_URL: string | URL = import.meta.env.VITE_API_URL
 function App() {
 
 
-  const playerTowerAnimationRef = useRef<{ brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string | undefined } | undefined>({});
-  const computerTowerAnimationRef = useRef<{ brickAnimation: string | undefined, towerAnimation: string | undefined, brickContainerAnimation: string | undefined } | undefined>({});
+  const playerTowerAnimationRef = useRef<{ brickAnimation: string | undefined; towerAnimation: string | undefined; brickContainerAnimation: string | undefined } | undefined>({});
+  const computerTowerAnimationRef = useRef<{ brickAnimation: string | undefined; towerAnimation: string | undefined; brickContainerAnimation: string | undefined } | undefined>({});
 
   const socketRef = useRef<WebSocket | null>(null);
   const [messageQueue, setMessageQueue] = useState<string[]>([]);
@@ -32,9 +32,9 @@ function App() {
 
     let flyInAnimation = '';
     if (isComputer) {
-      flyInAnimation = 'fly-in-right .6s ease-out';
+      flyInAnimation = 'fly-in-right .6s ease-out forwards';
     } else {
-      flyInAnimation = 'fly-in-left .6s ease-out';
+      flyInAnimation = 'fly-in-left .6s ease-out forwards';
     }
 
     let errors = 0;
@@ -157,11 +157,11 @@ function App() {
   useEffect(() => {
     playerTowerAnimationRef.current = calculateTowerStatus(playerTower, false);
     // setPlayerTowerStatus(playerTowerAnimationRef.current);
-  }, [playerTower, computerTower])
+  }, [playerTower])
 
   useEffect(() => {
     computerTowerAnimationRef.current = calculateTowerStatus(computerTower, true);
-  }, [playerTower, computerTower])
+  }, [computerTower])
 
   function switchToMainPile() {
     setTakeFromPile('main');
