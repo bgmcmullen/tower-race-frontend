@@ -157,11 +157,11 @@ function App() {
   useEffect(() => {
     playerTowerAnimationRef.current = calculateTowerStatus(playerTower, false);
     // setPlayerTowerStatus(playerTowerAnimationRef.current);
-  }, [playerTower])
+  }, [playerTower, computerTower])
 
   useEffect(() => {
     computerTowerAnimationRef.current = calculateTowerStatus(computerTower, true);
-  }, [computerTower])
+  }, [playerTower, computerTower])
 
   function switchToMainPile() {
     setTakeFromPile('main');
