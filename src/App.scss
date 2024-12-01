@@ -1,0 +1,234 @@
+@use "sass:math";
+
+body {
+  display: block;
+  width: 100%;
+  background-color: darkgray;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}
+
+.main-text {
+  margin-left: 8px;
+}
+
+.switch-button {
+  margin-left: 8px;
+}
+
+.new-brick {
+  background-color: rgb(22, 22, 22);
+  padding-left: 0;
+  padding-right: 0;
+  color: white;
+}
+
+.start-button {
+  margin-left: 8px;
+  height: 50px;
+  width: 100px;
+  font-size: 30px;
+}
+
+.button-container {
+  position: relative;
+  transform-style: preserve-3d;
+  visibility: hidden;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: rgb(22, 22, 22);
+}
+
+.play-message {
+  text-align: right;
+  margin-right: 10%;
+}
+
+.game-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.tower-button {
+  visibility: hidden;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: rgb(22, 22, 22);
+}
+
+
+.tower {
+  margin: 5px;
+  height: 270px;
+  width: 50%;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  transform-origin: bottom center;
+  margin: auto;
+  margin-bottom: 10px;
+  transform-style: preserve-3d;
+}
+
+.tower-button-wrapper {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+@for $i from 0 through 10 {
+  .tower-button-delay-#{$i} {
+    background-color: inherit !important;
+    visibility: visible;
+    padding-left: 0;
+    padding-right: 0;
+    color: white;
+    position: relative;
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+
+  .tower-button-topface-#{$i} {
+    @extend .tower-button-delay-#{$i};
+    top: -50%;
+    transform: rotateX(-90deg) scaleY(-1);
+    position: absolute;
+    will-change: transform;
+    transform-origin: center;
+  }
+}
+
+// @keyframes drop {
+//   0% {
+//     transform: rotate(0);
+//   }
+
+//   100% {
+//     transform: rotateX(-90);
+//   }
+// }
+
+@keyframes drop {
+    0% {
+    transform: rotateX(0deg);
+  }
+  
+
+  100% {
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes fly-in-left {
+  0% {
+    visibility: visible;
+    transform: translateX(-50vw);
+  }
+
+  100% {
+    visibility: visible;
+    transform: translateX(0vw);
+  }
+}
+
+@keyframes fly-in-right {
+  0% {
+    visibility: visible;
+    transform: translateX(50vw);
+  }
+
+  100% {
+    visibility: visible;
+    transform: translateX(0vw);
+  }
+}
+
+
+@keyframes flash-green {
+  0% {
+    background-color: rgb(22, 22, 22);
+  }
+
+  50% {
+    background-color: rgb(47, 93, 0);
+  }
+
+  100% {
+    background-color: rgb(22, 22, 22);
+  }
+}
+
+@keyframes rise-up-and-down {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes flash-gold {
+  0% {
+    background-color: rgb(22, 22, 22);
+  }
+
+  50% {
+    background-color: darkgoldenrod;
+  }
+
+  100% {
+    background-color: rgb(22, 22, 22);
+  }
+}
+
+@keyframes sway {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(2deg);
+  }
+
+  50% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes vibrate {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-1.1px);
+  }
+
+  50% {
+    transform: translateX(1.1px);
+  }
+
+  75% {
+    transform: translateX(-.4px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
