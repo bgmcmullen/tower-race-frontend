@@ -11,8 +11,8 @@ const API_URL: string | URL = import.meta.env.VITE_API_URL
 function App() {
 
 
-  const playerTowerAnimationRef = useRef<{ brickAnimation: string | undefined; towerAnimation: string | undefined; brickContainerAnimation: string | undefined } | undefined>({});
-  const computerTowerAnimationRef = useRef<{ brickAnimation: string | undefined; towerAnimation: string | undefined; brickContainerAnimation: string | undefined } | undefined>({});
+  const playerTowerAnimationRef = useRef<{ brickAnimation: string | undefined; towerAnimation: string | undefined; brickContainerAnimation: string | undefined } | undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
+  const computerTowerAnimationRef = useRef<{ brickAnimation: string | undefined; towerAnimation: string | undefined; brickContainerAnimation: string | undefined } | undefined>({ brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined });
 
   const socketRef = useRef<WebSocket | null>(null);
   const [messageQueue, setMessageQueue] = useState<string[]>([]);
@@ -122,11 +122,11 @@ function App() {
     setMessageQueue((prevMessageQueue) => [...prevMessageQueue, message]);
   }
 
-  function switchToMainPile() {
-    setTakeFromPile('main');
+  function switchToHiddenPile() {
+    setTakeFromPile('hidden');
 
     const message = JSON.stringify({
-      type: 'get_top_of_main',
+      type: 'get_top_of_hidden',
       payload: null
     });
     setMessageQueue((prevMessageQueue) => [...prevMessageQueue, message]);
@@ -173,8 +173,7 @@ function App() {
       {/* Display next brick */}
       <p className='main-text'>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: {nextBrick && <button className='new-brick' style={{ width: 5 + (nextBrick * 4) }} >{nextBrick}</button>}</p>
 
-      <button className='switch-button' onClick={switchToMainPile}>Take from Hidden Stack</button>
-
+      <button className='switch-button' onClick={switchToHiddenPile}>Take from Hidden Stack</button>
 
       <span className='game-container'>
 
