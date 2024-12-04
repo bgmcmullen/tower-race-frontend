@@ -19,7 +19,7 @@ function calculateTowerStatus(tower: number[], isComputer: boolean, gameOver: bo
       highest = tower[i];
   }
   if (errors <= 2)
-    return { brickAnimation: flyInAnimation, towerAnimation: 'sway 18s ease-in-out infinite', brickContainerAnimation: 'flash-green 2s ease-in-out infinite' };
+    return { brickAnimation: flyInAnimation, towerAnimation: 'sway 18s ease-in-out infinite', brickContainerAnimation: 'flash-lighter 2s ease-in-out infinite' };
   else if (errors <= 4)
     return { brickAnimation: flyInAnimation, towerAnimation: 'sway 13s ease-in-out infinite', brickContainerAnimation: 'vibrate 3.5s ease-in-out infinites' }
   else
