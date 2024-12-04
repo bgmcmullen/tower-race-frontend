@@ -11,13 +11,15 @@ $brick-highlight: #CD5C5C;
 $brick-text-color: #FFFFFF;
 
 
-body {
+html, body {
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   line-height: 1.5;
+  height: 100%;
   width: 100%;
   background-color: radial-gradient(circle, transparent, #121212 70%, #121212 100%);;
-  color: $text-color
+  color: $text-color;
+  overflow-y: auto;
 }
 
 h1 {
@@ -27,6 +29,18 @@ h1 {
   text-transform: uppercase;
   letter-spacing: 2px;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+} 
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
 }
 
 h2 {
@@ -48,15 +62,16 @@ h2 {
   margin-bottom: 10px;
 }
 
+// Set page background
 .title-container::after {
   content: '';
-  opacity: .3;
+  opacity: .5;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle, transparent, #121212 70%, #121212 100%);
+  background: radial-gradient(circle, transparent, #353535 70%, #121212 100%);
   pointer-events: none;
 }
 
@@ -71,6 +86,8 @@ h2 {
 }
 
 .switch-button {
+  display: block;
+  margin-top: 10px;
   background-color: $accent-color;
   color: $brick-text-color;
   border: none;
@@ -147,6 +164,7 @@ h2 {
   margin: 5px;
   height: 270px;
   width: 50%;
+  height: 400px;
   min-width: 250px;
   display: flex;
   flex-direction: column;
@@ -164,7 +182,6 @@ h2 {
 
 @for $i from 0 through 10 {
   .tower-button-delay-#{$i} {
-    transform: translateX(-50vw);
     background-color: inherit !important;
     visibility: visible;
     color: $brick-text-color;
@@ -191,6 +208,16 @@ h2 {
     will-change: transform;
     transform-origin: center;
   }
+}
+
+Footer {
+  width: 100%;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  bottom: 0;
+  gap: 20px;
 }
 
 @keyframes drop {
