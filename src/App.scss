@@ -1,42 +1,119 @@
 @use "sass:math";
+@use "sass:color";
+$primary-color: #bdbbc8;
+$secondary-color: #f0f0f0;
+$accent-color: #054f9e;
+$text-color: #000000;
+
+$brick-color: #7a1111;
+$brick-shadow: #8B0000;
+$brick-highlight: #CD5C5C;
+$brick-text-color: #FFFFFF;
+
 
 body {
-  display: block;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
   width: 100%;
-  background-color: darkgray;
+  background-color: radial-gradient(circle, transparent, #121212 70%, #121212 100%);;
+  color: $text-color
 }
 
 h1 {
-  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3rem;
+  color: #e1dfe9;;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 h2 {
   text-align: center;
+  font-size: 2em;
+}
+
+.title-container {
+  height: 10vh;
+  background: linear-gradient(135deg, #121212 0%, #3d1d1d 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 15px;
+  width: calc(100vw - 24px);
+  margin-left: 0;
+  border: 5px solid color.scale(#3d1d1d, $lightness: 40%);
+  margin-bottom: 10px;
+}
+
+.title-container::after {
+  content: '';
+  opacity: .3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, transparent, #121212 70%, #121212 100%);
+  pointer-events: none;
 }
 
 .main-text {
+  display: inline;
+  background-color: #ffffff;
+  border: 2px solid black;
+  padding: 5px;
   margin-left: 8px;
+  padding-right: 0;
+  margin-top: 5px;
 }
 
 .switch-button {
+  background-color: $accent-color;
+  color: $brick-text-color;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
   margin-left: 8px;
+  height: 30px;
+  width: 210px;
 }
 
 .new-brick {
-  background-color: rgb(22, 22, 22);
-  padding-left: 0;
-  padding-right: 0;
-  color: white;
+  background-color: $brick-color;
+  color: $brick-text-color;
+  border: 3px solid color.scale($brick-color, $lightness: -40%);
+  padding: 3.5px 0px;
+  position: relative;
+  font-size: 1em;
 }
 
 .start-button {
+  background-color: $accent-color;
+  color: $brick-text-color;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
   margin-left: 8px;
+  margin-bottom: 10px;
   height: 50px;
   width: 100px;
-  font-size: 30px;
+
+  &:hover {
+    background-color: color.scale($accent-color, $lightness: 30%);
+  }
 }
 
 .button-container {
+  background-color: $brick-color;
   position: relative;
   transform-style: preserve-3d;
   visibility: hidden;
@@ -44,7 +121,6 @@ h2 {
   width: 100%;
   justify-content: center;
   align-items: flex-start;
-  background-color: rgb(22, 22, 22);
 }
 
 .play-message {
@@ -85,21 +161,31 @@ h2 {
   transform-style: preserve-3d;
 }
 
+
 @for $i from 0 through 10 {
   .tower-button-delay-#{$i} {
+    transform: translateX(-50vw);
     background-color: inherit !important;
     visibility: visible;
-    padding-left: 0;
-    padding-right: 0;
-    color: white;
+    color: $brick-text-color;
+    border: 3px solid color.scale($brick-color, $lightness: -40%);
+    padding: 3.5px 0px;
+    cursor: pointer;
     position: relative;
     will-change: transform;
     transform-style: preserve-3d;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    box-shadow:
+      inset 0 2px 0 $brick-highlight,
+      inset 0 -4px 0 $brick-shadow,
+      0 2px 3px rgba(0, 0, 0, 0.3)
   }
 
   .tower-button-topface-#{$i} {
     @extend .tower-button-delay-#{$i};
     top: -50%;
+    transform: translateX(-50vw);
     transform: rotateX(-90deg) scaleY(-1);
     position: absolute;
     will-change: transform;
@@ -107,63 +193,51 @@ h2 {
   }
 }
 
-// @keyframes drop {
-//   0% {
-//     transform: rotate(0);
-//   }
-
-//   100% {
-//     transform: rotateX(-90);
-//   }
-// }
-
 @keyframes drop {
-    0% {
+  0% {
     transform: rotateX(0deg);
   }
-  
+
 
   100% {
     transform: rotateX(-90deg);
   }
 }
 
+
+
 @keyframes fly-in-left {
   0% {
-    visibility: visible;
     transform: translateX(-50vw);
   }
 
   100% {
-    visibility: visible;
     transform: translateX(0vw);
   }
 }
 
 @keyframes fly-in-right {
   0% {
-    visibility: visible;
     transform: translateX(50vw);
   }
 
   100% {
-    visibility: visible;
     transform: translateX(0vw);
   }
 }
 
 
-@keyframes flash-green {
+@keyframes flash-lighter {
   0% {
-    background-color: rgb(22, 22, 22);
+    background-color: $brick-color
   }
 
   50% {
-    background-color: rgb(47, 93, 0);
+    background-color: color.scale($brick-color, $lightness: 45%);
   }
 
   100% {
-    background-color: rgb(22, 22, 22);
+    background-color: $brick-color;
   }
 }
 
@@ -183,7 +257,7 @@ h2 {
 
 @keyframes flash-gold {
   0% {
-    background-color: rgb(22, 22, 22);
+    background-color: $brick-color;
   }
 
   50% {
@@ -191,7 +265,7 @@ h2 {
   }
 
   100% {
-    background-color: rgb(22, 22, 22);
+    background-color: $brick-color;
   }
 }
 

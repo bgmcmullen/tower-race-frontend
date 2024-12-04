@@ -18,7 +18,7 @@ function App() {
   const [messageQueue, setMessageQueue] = useState<string[]>([]);
   const [computerTower, setComputerTower] = useState<number[]>([]);
   const [playerTower, setPlayerTower] = useState<number[]>([]);
-  const [computerPlayMessage, setComputerPlayMessage] = useState<string>('');
+  const [, setComputerPlayMessage] = useState<string>('');
   const [takeFromPile, setTakeFromPile] = useState<string>('discard');
   const [nextBrick, setNextBrick] = useState<number | null>(null);
   const [gameOver, setGameOver] = useState<boolean>(false);
@@ -107,6 +107,14 @@ function App() {
   }
 
   function sendStartMessasge() {
+
+    setGameOver(false);
+    setWinner('');
+
+    setPlayerTower([]);
+    setComputerTower([]);
+
+
     const testMessage = JSON.stringify({
       type: "start_game",
       payload: null,
@@ -164,14 +172,13 @@ function App() {
 
   return (
     <>
-      <h1>- - - Tower Race - - -</h1>
-      <button className='start-button' onClick={sendStartMessasge}>Start</button>
+      <div className='title-container'><h1>- - - Tower Race - - -</h1></div>
+
+      <button className='start-button' onClick={sendStartMessasge}>Start/Restart</button>
       <br></br>
 
-      <p className='play-message'>{computerPlayMessage}</p>
-
       {/* Display next brick */}
-      <p className='main-text'>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: {nextBrick && <button className='new-brick' style={{ width: 5 + (nextBrick * 4) }} >{nextBrick}</button>}</p>
+      <p className='main-text'>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: {nextBrick && <button className='new-brick' style={{ width: 8 + (nextBrick * 4) }} >{nextBrick}</button>}</p>
 
       <button className='switch-button' onClick={switchToHiddenPile}>Take from Hidden Stack</button>
 
@@ -186,14 +193,14 @@ function App() {
           {/* Display player tower */}
           {playerTower.map((brick, index) => <div key={`player-brick-container${index}`}
 
-            // Flash green when tower is close to stacked
+            // Flash lighter when tower is close to stacked
             className='button-container' style={{ animation: `${winner === 'player' ? 'flash-gold 3s ease-in-out infinite' : playerTowerAnimationRef.current?.brickContainerAnimation} ${.6 + (10 - index) / 10}s` }}>
 
             {/* Brick button front face */}
-            <button key={`player-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 5 + (brick * 4), animation: playerTowerAnimationRef.current?.brickAnimation }} onClick={sendReplaceBrickMessage}>{brick}</button>
+            <button key={`player-brick${brick}`} className={`tower-button-delay-${index}`} style={{ width: 8 + (brick * 4), animation: playerTowerAnimationRef.current?.brickAnimation }} onClick={sendReplaceBrickMessage}>{brick}</button>
 
             {/* Brick button back face */}
-            <button key={`player-brick-top${brick}`} className={`tower-button-topface-${index}`} style={{ width: 5 + (brick * 4) }}>{brick}</button></div>
+            <button key={`player-brick-top${brick}`} className={`tower-button-topface-${index}`} style={{ width: 8 + (brick * 4) }}>{brick}</button></div>
           )} </div>
 
         <br></br>
@@ -207,7 +214,7 @@ function App() {
           {/* Display computer tower */}
           {computerTower.map((brick, index) => <div key={`computer-brick-container${index}`}
 
-            // Flash green when tower is close to stacked
+            // Flash ligther when tower is close to stacked
             className='button-container' style={{ animation: `${winner === 'computer' ? 'flash-gold 3s ease-in-out infinite' : computerTowerAnimationRef.current?.brickContainerAnimation} ${.6 + (10 - index) / 10}s` }}>
 
             {/* Brick button front face */}
