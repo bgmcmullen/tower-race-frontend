@@ -223,7 +223,7 @@ h2 {
 .instructions {
   font-family: "Audiowide", sans-serif;
     position: relative;
-    font-size: 15px;
+    font-size: 13.5px;
     width: 500px;
     background-color: rgba(255, 255, 255, 0.8196078431);
     border: 2px solid black;
@@ -233,6 +233,7 @@ h2 {
     margin-top: 5px;
     z-index: 2;
     border-radius: 20px;
+    margin-bottom: 0;
 }
 
 @for $i from 0 through 10 {

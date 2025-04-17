@@ -2,11 +2,12 @@
 
 .main-title-text {
   position: absolute;
-  font-size: clamp(32px, 15vw, 112px);
+  font-size: clamp(32px, 15vw, 95px);
   font-weight: 700;
   font-family: "Inknut Antiqua";
   margin: 0;
   padding: 0;
+  
 }
 
 
@@ -15,17 +16,18 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-
   
 }
 
 .main-title-div {
-  height: 160px;
+  height: 120px;
   position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
   margin-bottom: 10px;
+  margin-top: 0px;
+  padding-top: 0px;
 }
 
 .shadow-only {
