@@ -1,9 +1,11 @@
 @use "sass:math";
 @use "sass:color";
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
 $primary-color: #bdbbc8;
 $secondary-color: #f0f0f0;
-$accent-color: #054f9e;
-$text-color: #000000;
+$accent-color: #d90808;
+$text-color: #d90808;
 
 $brick-color: #7a1111;
 $brick-shadow: #8B0000;
@@ -17,9 +19,19 @@ html, body {
   line-height: 1.5;
   height: 100%;
   width: 100%;
-  background-color: radial-gradient(circle, transparent, #121212 70%, #121212 100%);;
+  background-image: url("/assets/images/title-background.jpg");
   color: $text-color;
   overflow-y: auto;
+}
+
+.overlay-gradient {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(
+    rgba(0, 0, 0, 0.756),
+    rgba(0, 0, 0, 0.84)
+  );
+  z-index: 0;
 }
 
 h1 {
@@ -44,8 +56,13 @@ h1 {
 }
 
 h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
   text-align: center;
   font-size: 2em;
+  color: $text-color;
+  font-family: 'Audiowide', sans-serif;
+  text-shadow: 8px 8px 4px rgba(0, 0, 0, .75);
 }
 
 .title-container {
@@ -71,23 +88,28 @@ h2 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle, transparent, #353535 70%, #121212 100%);
+  height: 100%;
   pointer-events: none;
 }
 
 .main-text {
-  display: inline;
-  background-color: #ffffff;
+  font-family: 'Audiowide', sans-serif;
+  position: relative;
+  width: 500px;
+  height: 40px;
+  background-color: #ffffffd1;
   border: 2px solid black;
   padding: 5px;
   margin-left: 8px;
   padding-right: 0;
   margin-top: 5px;
+  z-index: 2;
+  border-radius: 20px;
 }
 
 .switch-button {
+  font-family: 'Audiowide', sans-serif;
   display: block;
-  margin-top: 10px;
   background-color: $accent-color;
   color: $brick-text-color;
   border: none;
@@ -97,14 +119,17 @@ h2 {
   font-size: 1em;
   transition: background-color 0.3s ease;
   margin-left: 8px;
-  height: 30px;
-  width: 210px;
+  height: 40px;
+  width: fit-content;
+  z-index: 2;
   &:hover {
     background-color: color.scale($accent-color, $lightness: 30%);
   }
 }
 
 .new-brick {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .9em;
   background-color: $brick-color;
   color: $brick-text-color;
   border: 3px solid color.scale($brick-color, $lightness: -40%);
@@ -114,6 +139,7 @@ h2 {
 }
 
 .start-button {
+  font-family: 'Audiowide', sans-serif;
   background-color: $accent-color;
   color: $brick-text-color;
   border: none;
@@ -122,14 +148,26 @@ h2 {
   position: relative;
   font-size: 1em;
   transition: background-color 0.3s ease;
-  margin-left: 8px;
+  margin-left: 30px;
   margin-bottom: 10px;
-  height: 50px;
-  width: 100px;
+  height: 40px;
+  width: fit-content;
+  z-index: 2;
 
   &:hover {
     background-color: color.scale($accent-color, $lightness: 30%);
   }
+}
+
+.game-button-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.game-button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 80px
 }
 
 .button-container {
@@ -182,9 +220,24 @@ h2 {
   transform-style: preserve-3d;
 }
 
+.instructions {
+  font-family: "Audiowide", sans-serif;
+    position: relative;
+    font-size: 15px;
+    width: 500px;
+    background-color: rgba(255, 255, 255, 0.8196078431);
+    border: 2px solid black;
+    padding: 5px;
+    margin-left: 8px;
+    padding-right: 0;
+    margin-top: 5px;
+    z-index: 2;
+    border-radius: 20px;
+}
 
 @for $i from 0 through 10 {
   .tower-button-delay-#{$i} {
+    font-family: 'Orbitron', sans-serif;
     background-color: inherit !important;
     visibility: visible;
     color: $brick-text-color;
@@ -194,7 +247,7 @@ h2 {
     position: relative;
     will-change: transform;
     transform-style: preserve-3d;
-    font-size: 1em;
+    font-size: .9em;
     transition: background-color 0.3s ease;
     box-shadow:
       inset 0 2px 0 $brick-highlight,

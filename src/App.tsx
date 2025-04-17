@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import calculateTowerStatus from './CalculateTowerStatus';
-import Header from './Header';
 import Footer from './Footer';
+import Title from './Title';
 import './App.scss'
 
 
@@ -27,6 +27,7 @@ function App() {
   const [winner, setWinner] = useState<string>('');
   const [displayComputerTower, setDisplayComputerTower] = useState<boolean>(false);
   const [displayPlayerTower, setDisplayPlayerTower] = useState<boolean>(false);
+  const [gameInProgress, setGameInProgress] = useState<boolean>(false);
 
 
 
@@ -58,6 +59,7 @@ function App() {
           setNextBrick(payload);
           break;
         case 'player_wins':
+          setGameInProgress(false);
           setGameOver(true);
           setWinner('player');
 
@@ -65,6 +67,7 @@ function App() {
           computerTowerAnimationRef.current = { brickAnimation: undefined, towerAnimation: undefined, brickContainerAnimation: undefined };
           break;
         case 'computer_wins':
+          setGameInProgress(false);
           setGameOver(true);
           setWinner('computer');
 
@@ -74,15 +77,6 @@ function App() {
 
       }
     }
-
-    // Handle the open event and enable sending messages
-    socketRef.current.addEventListener('open', () => {
-      console.log('WebSocket connection opened.');
-    });
-
-    socketRef.current.addEventListener('close', () => {
-      console.log('WebSocket connection closed.');
-    });
 
   }, []);
 
@@ -111,6 +105,8 @@ function App() {
   }
 
   function sendStartMessasge() {
+    setTakeFromPile("discard")
+    setGameInProgress(true);
 
     setDisplayComputerTower(false);
     setDisplayPlayerTower(false);
@@ -186,14 +182,27 @@ function App() {
 
   return (
     <>
-      <Header />
-      <button className='start-button' onClick={sendStartMessasge}>Start/Restart</button>
+      <div className="overlay-gradient"></div>
+      <Title />
+      <div className='game-button-grid-container'>
+        <div>
+          <div className='game-button-container'>
+            <button className='start-button' onClick={sendStartMessasge}>Start/Restart</button>
+            {gameInProgress && <button className='switch-button' onClick={switchToHiddenPile}>Take from {takeFromPile === "discard" ? "Discard" : "Hidden"} Stack</button>}
+          </div>
+
+          {/* Display next brick */}
+          <p className='main-text'>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: {nextBrick && <button className='new-brick' style={{ width: 8 + (nextBrick * 4) }} >{nextBrick}</button>}</p>
+        </div>
+        <p className='instructions'>Click the Start/Restart button to begin the game.
+          Click on bricks in your tower replace them.
+          Choose bricks from either the discard stack or the hidden stack.
+          Aim to create a perfectly stacked tower, with the largest brick on the bottom and progressively smaller bricks toward the top before the computer finishes its tower.</p>
+      </div>
+
       <br></br>
 
-      {/* Display next brick */}
-      <p className='main-text'>Next brick in {takeFromPile === 'discard' ? 'discard' : 'hidden'} stack: {nextBrick && <button className='new-brick' style={{ width: 8 + (nextBrick * 4) }} >{nextBrick}</button>}</p>
 
-      <button className='switch-button' onClick={switchToHiddenPile}>Take from Hidden Stack</button>
 
       <span className='game-container'>
 
@@ -225,7 +234,7 @@ function App() {
           <h2>{winner === 'computer' ? '👑Computer👑' : 'Computer'}</h2>
 
           {/* Display computer tower */}
-          
+
           {displayComputerTower && computerTower.map((brick, index) => <div key={`computer-brick-container${index}`}
 
             // Flash ligther when tower is close to stacked
@@ -240,7 +249,7 @@ function App() {
         </div>
         <br></br>
       </span>
-      <Footer/>
+      <Footer />
     </>
   )
 }
