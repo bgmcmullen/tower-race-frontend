@@ -2,6 +2,8 @@
 
 Tower Race is a simple single player game where the play must build and optimize their tower using bricks, competing against an AI opponent. The game features interactive animations, and a real-time WebSocket connection.
 
+![Screenshot of TowerRace gameplay](public/assets/images/screenshot.png)
+
 ## Features
 
 - **Player vs. AI Gameplay**: Compete against an AI opponent with a robust strategy for building stable towers.
